@@ -4,7 +4,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
 export default function AddFood() {
-  const { user, loading } = useContext(AuthContext);
+  const { user } = useContext(AuthContext); // get logged-in user
   const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
@@ -12,7 +12,7 @@ export default function AddFood() {
     location: "",
     quantity: "",
     description: "",
-    image: "", // will store imgbb URL
+    image: "",
   });
   const [file, setFile] = useState(null);
 
@@ -39,38 +39,28 @@ export default function AddFood() {
     if (!file) return;
     const form = new FormData();
     form.append("image", file);
-    const apiKey = "45281896da0a2a23eb77b773b33396c1";
+    const apiKey = "45281896da0a2a23eb77b773b33396c1"; // imgbb key
     const res = await axios.post(
       `https://api.imgbb.com/1/upload?key=${apiKey}`,
       form
     );
-    return res.data.data.url; // returned image URL
+    return res.data.data.url;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user) return alert("❌ You must be logged in to add food.");
-
     let imageUrl = formData.image;
     if (file) {
       imageUrl = await handleFileUpload();
     }
 
-    // Add donor info from Firebase user
-    const newFood = {
+    mutation.mutate({
       ...formData,
       image: imageUrl,
-      donor: user.displayName || user.email,
-      donorEmail: user.email,
-      donorPhoto: user.photoURL || "",
-      status: "Available",
-    };
-
-    mutation.mutate(newFood);
+      donor: user.displayName,
+      donorEmail: user.email, // added donorEmail for request system
+    });
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (!user) return <p>Please login to add food.</p>;
 
   return (
     <div style={{ padding: "20px" }}>
