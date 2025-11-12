@@ -1,15 +1,11 @@
-import FoodList from "./components/FoodList";
-import AddFood from "./components/AddFood";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar";
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <h1>🍽️ PlateShare</h1>
-      <AddFood />
-      <hr />
-      <FoodList />
-    </div>
+    <>
+      <Navbar />
+      <Outlet /> {/* renders the matched child route */}
+    </>
   );
 }
-
-export default App;
