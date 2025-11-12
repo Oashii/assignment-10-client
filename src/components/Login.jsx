@@ -1,20 +1,18 @@
 import { useState, useContext } from "react";
-import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase.config";
 import { AuthContext } from "../provider/AuthProvider";
 
-export default function Register() {
-  const { user } = useContext(AuthContext);
-  const [name, setName] = useState("");
+export default function Login() {
+  const { user } = useContext(AuthContext); // <-- now used
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  console.log(user);
-  const handleRegister = async (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(result.user, { displayName: name });
-      alert("✅ Registration successful!");
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("✅ Login successful!");
     } catch (err) {
       alert(err.message);
     }
@@ -31,18 +29,17 @@ export default function Register() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} required />
-        <br />
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
         <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
         <br />
         <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
         <br />
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
       </form>
       <br />
-      <button onClick={handleGoogleLogin}>Register/Login with Google</button>
+      <button onClick={handleGoogleLogin}>Login with Google</button>
+      {user && <p>Logged in as: {user.displayName || user.email}</p>} {/* optional display */}
     </div>
   );
 }

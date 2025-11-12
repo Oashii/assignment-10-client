@@ -1,18 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../provider/AuthProvider";
 
 export default function AddFood() {
+  const { user, loading } = useContext(AuthContext);
   const queryClient = useQueryClient();
+
   const [formData, setFormData] = useState({
     name: "",
-    donor: "",
     location: "",
     quantity: "",
     description: "",
     image: "", // will store imgbb URL
   });
-
   const [file, setFile] = useState(null);
 
   const mutation = useMutation({
@@ -25,7 +26,6 @@ export default function AddFood() {
       alert("✅ Food added successfully!");
       setFormData({
         name: "",
-        donor: "",
         location: "",
         quantity: "",
         description: "",
@@ -49,13 +49,28 @@ export default function AddFood() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) return alert("❌ You must be logged in to add food.");
+
     let imageUrl = formData.image;
     if (file) {
       imageUrl = await handleFileUpload();
     }
 
-    mutation.mutate({ ...formData, image: imageUrl });
+    // Add donor info from Firebase user
+    const newFood = {
+      ...formData,
+      image: imageUrl,
+      donor: user.displayName || user.email,
+      donorEmail: user.email,
+      donorPhoto: user.photoURL || "",
+      status: "Available",
+    };
+
+    mutation.mutate(newFood);
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return <p>Please login to add food.</p>;
 
   return (
     <div style={{ padding: "20px" }}>
@@ -66,14 +81,6 @@ export default function AddFood() {
           placeholder="Food Name"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-        />
-        <br />
-        <input
-          type="text"
-          placeholder="Donor Name"
-          value={formData.donor}
-          onChange={(e) => setFormData({ ...formData, donor: e.target.value })}
           required
         />
         <br />
