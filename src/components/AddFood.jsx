@@ -14,6 +14,7 @@ export default function AddFood() {
     quantity: "",
     description: "",
     image: "",
+    expireDate: "",
   });
   const [file, setFile] = useState(null);
 
@@ -31,6 +32,7 @@ export default function AddFood() {
         quantity: "",
         description: "",
         image: "",
+        expireDate: "",
       });
       setFile(null);
     },
@@ -60,6 +62,7 @@ export default function AddFood() {
       image: imageUrl,
       donor: user.displayName,
       donorEmail: user.email, // added donorEmail for request system
+      donorPhotoURL: user.photoURL, // added donor's photo
     });
   };
 
@@ -103,6 +106,18 @@ export default function AddFood() {
           }
           required
         ></textarea>
+        <br />
+        <label>
+          Expire Date:
+          <input
+            type="date"
+            value={formData.expireDate}
+            onChange={(e) =>
+              setFormData({ ...formData, expireDate: e.target.value })
+            }
+            required
+          />
+        </label>
         <br />
         <input
           type="file"

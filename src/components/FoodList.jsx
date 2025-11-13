@@ -19,7 +19,7 @@ export default function FoodList() {
   return (
     <div style={{ padding: "20px" }}>
       <h2>Available Foods</h2>
-  <div style={{ display: "grid", gap: "20px", gridTemplateColumns: "repeat(4, 1fr)", alignItems: "start" }}>
+  <div style={{ display: "grid", gap: "20px", gridTemplateColumns: "repeat(3, 1fr)", alignItems: "start" }}>
         {foods.map((food) => (
           <Link
             to={`/food/${food._id}`}
@@ -52,10 +52,11 @@ export default function FoodList() {
                 />
               )}
               <h3>{food.name}</h3>
-              <p><b>Donor:</b> {food.donor}</p>
+              <p><b>Donator:</b> {food.donor} {food.donorPhotoURL && <img src={food.donorPhotoURL} alt={food.donor} style={{ width: "30px", height: "30px", borderRadius: "50%", display: "inline-block", marginLeft: "10px", verticalAlign: "middle" }} />}</p>
               <p><b>Location:</b> {food.location}</p>
               <p><b>Quantity:</b> {food.quantity}</p>
               <p><b>Status:</b> {food.food_status === "donated" ? "Donated" : "Available"}</p>
+              {food.expireDate && <p><b>Expire Date:</b> {new Date(food.expireDate).toLocaleDateString()}</p>}
               <p>{food.description}</p>
             </div>
           </Link>
