@@ -27,7 +27,7 @@ export default function Home() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Welcome to PlateShare 🍱</h1>
+      <h1>Welcome to PlateShare</h1>
       <p>Share your surplus food and help the community.</p>
 
       <h2>Featured Foods</h2>
@@ -47,7 +47,7 @@ export default function Home() {
       </div>
 
       <div style={{ marginTop: "20px" }}>
-        <Link to="/available-foods">
+        <Link to="/foods">
           <button>Show All Foods</button>
         </Link>
       </div>

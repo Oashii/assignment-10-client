@@ -8,7 +8,7 @@ export default function FoodDetails() {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const queryClient = useQueryClient();
-  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
   const [requestData, setRequestData] = useState({
     location: "",
     reason: "",
@@ -32,7 +32,7 @@ export default function FoodDetails() {
     },
     onSuccess: () => {
       alert("✅ Request submitted!");
-      setShowRequestForm(false);
+      setShowRequestModal(false);
       setRequestData({ location: "", reason: "", contact: "" });
       queryClient.invalidateQueries(["requests"]);
     },
@@ -64,40 +64,71 @@ export default function FoodDetails() {
 
       {user && (
         <>
-          <button onClick={() => setShowRequestForm(!showRequestForm)}>
-            {showRequestForm ? "Cancel Request" : "Request Food"}
-          </button>
+          <button onClick={() => setShowRequestModal(true)}>Request Food</button>
 
-          {showRequestForm && (
-            <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
-              <input
-                type="text"
-                placeholder="Your Pickup Location"
-                value={requestData.location}
-                onChange={(e) => setRequestData({ ...requestData, location: e.target.value })}
-                required
-              />
-              <br />
-              <textarea
-                placeholder="Why do you need this food?"
-                value={requestData.reason}
-                onChange={(e) => setRequestData({ ...requestData, reason: e.target.value })}
-                required
-              ></textarea>
-              <br />
-              <input
-                type="text"
-                placeholder="Your Contact Number"
-                value={requestData.contact}
-                onChange={(e) => setRequestData({ ...requestData, contact: e.target.value })}
-                required
-              />
-              <br />
-              <button type="submit">Submit Request</button>
-            </form>
+          {showRequestModal && (
+            <div style={modalStyles.overlay}>
+              <div style={modalStyles.modal}>
+                <h3>Request Food</h3>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    type="text"
+                    placeholder="Your Pickup Location"
+                    value={requestData.location}
+                    onChange={(e) => setRequestData({ ...requestData, location: e.target.value })}
+                    required
+                  />
+                  <br />
+                  <textarea
+                    placeholder="Why do you need this food?"
+                    value={requestData.reason}
+                    onChange={(e) => setRequestData({ ...requestData, reason: e.target.value })}
+                    required
+                  ></textarea>
+                  <br />
+                  <input
+                    type="text"
+                    placeholder="Your Contact Number"
+                    value={requestData.contact}
+                    onChange={(e) => setRequestData({ ...requestData, contact: e.target.value })}
+                    required
+                  />
+                  <br />
+                  <div style={{ marginTop: "10px" }}>
+                    <button type="submit">Submit Request</button>
+                    <button type="button" onClick={() => setShowRequestModal(false)} style={{ marginLeft: "10px" }}>
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           )}
         </>
       )}
     </div>
   );
 }
+
+const modalStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    width: "90%",
+    maxWidth: "400px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+  },
+};

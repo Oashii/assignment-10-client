@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { NavLink } from "react-router-dom";
 
 const fetchFoods = async () => {
   const res = await axios.get("http://localhost:3000/foods");
@@ -17,9 +18,11 @@ export default function FoodList() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Available Foods 🍱</h2>
+      <h2>Available Foods</h2>
       <div style={{ display: "grid", gap: "20px", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}>
         {foods.map((food) => (
+          
+
           <div
             key={food._id}
             style={{
@@ -41,7 +44,9 @@ export default function FoodList() {
             <p><b>Location:</b> {food.location}</p>
             <p><b>Quantity:</b> {food.quantity}</p>
             <p>{food.description}</p>
+          
           </div>
+                    
         ))}
       </div>
     </div>
