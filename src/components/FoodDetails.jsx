@@ -60,6 +60,7 @@ export default function FoodDetails() {
       <p><b>Donor:</b> {food.donor}</p>
       <p><b>Quantity:</b> {food.quantity}</p>
       <p><b>Location:</b> {food.location}</p>
+      <p><b>Status:</b> {food.food_status === "donated" ? "Donated" : "Available"}</p>
       <p>{food.description}</p>
 
       {user && (
