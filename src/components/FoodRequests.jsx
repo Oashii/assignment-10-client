@@ -1,110 +1,88 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
 export default function FoodRequests() {
   const { user } = useContext(AuthContext);
-  const queryClient = useQueryClient();
 
-  // Fetch all requests for foods owned by this user
-  const { data: requests = [], isLoading, isError } = useQuery({
-    queryKey: ["requests"],
+  // Fetch all requests made by this user
+  const { data: userRequests = [], isLoading, isError } = useQuery({
+    queryKey: ["myRequests", user?.email],
     queryFn: async () => {
       const res = await axios.get("http://localhost:3000/requests");
-      // filter requests where foodOwnerEmail === user.email
-      const filteredRequests = res.data.filter((req) => req.foodOwnerEmail === user.email);
+      // Filter requests where userEmail === logged-in user's email
+      const filteredRequests = res.data.filter((req) => req.userEmail === user.email);
       
       // Fetch food details for each request
-      const requestsWithFoodNames = await Promise.all(
+      const requestsWithFoodDetails = await Promise.all(
         filteredRequests.map(async (req) => {
           try {
             const foodRes = await axios.get(`http://localhost:3000/foods/${req.foodId}`);
-            return { ...req, foodName: foodRes.data.name };
+            return { ...req, foodDetails: foodRes.data };
           } catch {
-            return { ...req, foodName: "Unknown" };
+            return { ...req, foodDetails: null };
           }
         })
       );
       
-      return requestsWithFoodNames;
+      return requestsWithFoodDetails;
     },
+    enabled: !!user?.email,
   });
 
-  // Mutation to update request status
-  const mutation = useMutation({
-    mutationFn: async ({ requestId, status, foodId }) => {
-      // Update request status
-      await axios.patch(`http://localhost:3000/requests/${requestId}`, { status });
-      // If accepted, also update food status
-      if (status === "accepted") {
-        await axios.patch(`http://localhost:3000/foods/${foodId}`, { food_status: "donated" });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(["requests"]);
-      queryClient.invalidateQueries(["foods"]);
-    },
-  });
-
-  const handleAction = (requestId, status, foodId) => {
-    mutation.mutate({ requestId, status, foodId });
-  };
-
-  if (isLoading) return <p>Loading requests...</p>;
+  if (isLoading) return <p>Loading your requests...</p>;
   if (isError) return <p>Failed to load requests.</p>;
 
   return (
     <div style={{ padding: "20px" }}>
       <h2>My Food Requests</h2>
-      {requests.length === 0 ? (
-        <p>No requests yet.</p>
+      {userRequests.length === 0 ? (
+        <p>You haven't requested any food yet.</p>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th>Requester</th>
-              <th>Food</th>
-              <th>Location</th>
-              <th>Reason</th>
-              <th>Contact</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map((req) => (
-              <tr key={req._id} style={{ borderBottom: "1px solid #ccc" }}>
-                <td>
-                  <div><b>{req.userName}</b></div>
-                  <div style={{ fontSize: "0.9em", color: "#666" }}>{req.userEmail}</div>
-                </td>
-                <td>{req.foodName}</td>
-                <td>{req.location}</td>
-                <td>{req.reason}</td>
-                <td>{req.contact}</td>
-                <td>{req.status}</td>
-                <td>
-                  {req.status === "pending" && (
-                    <>
-                      <button
-                        onClick={() => handleAction(req._id, "accepted", req.foodId)}
-                        style={{ marginRight: "5px" }}
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => handleAction(req._id, "rejected", req.foodId)}
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ display: "grid", gap: "20px", gridTemplateColumns: "repeat(3, 1fr)", alignItems: "start" }}>
+          {userRequests.map((req) => (
+            <div
+              key={req._id}
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "10px",
+                padding: "15px",
+                background: "#f9f9f9",
+                transition: "transform 0.2s, box-shadow 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-5px)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {req.foodDetails?.image && (
+                <img
+                  src={req.foodDetails.image}
+                  alt={req.foodDetails.name}
+                  style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "5px", display: "block", marginBottom: "10px" }}
+                />
+              )}
+              <h3>{req.foodDetails?.name || "Unknown Food"}</h3>
+              <p>{req.foodDetails?.description}</p>
+              <p style={{ marginTop: "15px" }}>
+                <b>Status:</b>{" "}
+                <span style={{
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  backgroundColor: req.status === "accepted" ? "#d4edda" : req.status === "rejected" ? "#f8d7da" : "#cfe2ff",
+                  color: req.status === "accepted" ? "#155724" : req.status === "rejected" ? "#721c24" : "#004085"
+                }}>
+                  {req.status}
+                </span>
+              </p>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
