@@ -90,8 +90,8 @@ export default function Navbar() {
               fontWeight: "500",
               transition: "background 0.3s"
             }}
-            onMouseEnter={(e) => e.target.style.color = "#28a745"}
-            onMouseLeave={(e) => e.target.style.color = "#333"}>
+            onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"}
+            onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"}>
               Login
             </Link>
             <Link to="/register" style={{
