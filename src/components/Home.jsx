@@ -22,7 +22,7 @@ export default function Home() {
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Something went wrong!</p>;
 
-  // sort foods by quantity (assumes quantity string like "Serves 5 people")
+
   const sortedFoods = [...foods].sort((a, b) => {
     const numA = parseInt(a.quantity.replace(/\D/g, "")) || 0;
     const numB = parseInt(b.quantity.replace(/\D/g, "")) || 0;
@@ -138,7 +138,6 @@ export default function Home() {
         style={{ padding: "60px 20px", backgroundColor: "#f8f9fa" }}>
         <h2 style={{ textAlign: "center", marginBottom: "50px", fontSize: "32px", fontWeight: "bold", color: "#333" }}>How It Works</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "40px", maxWidth: "1200px", margin: "0 auto" }}>
-          {/* Step 1 */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -164,8 +163,6 @@ export default function Home() {
             <h3 style={{ fontSize: "20px", marginBottom: "15px", color: "#333" }}>Post Food</h3>
             <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>Share your surplus food with the community. Upload photos, describe the food, and let others know what's available.</p>
           </motion.div>
-
-          {/* Step 2 */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -191,8 +188,6 @@ export default function Home() {
             <h3 style={{ fontSize: "20px", marginBottom: "15px", color: "#333" }}>Find Food</h3>
             <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>Browse available foods in your neighborhood. Filter by location, type, and quantity to find what you need.</p>
           </motion.div>
-
-          {/* Step 3 */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -230,7 +225,6 @@ export default function Home() {
         style={{ padding: "60px 20px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "50px", fontSize: "32px", fontWeight: "bold", color: "#333" }}>Community Impact</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "30px", maxWidth: "1200px", margin: "0 auto" }}>
-          {/* Stat 1: Foods Shared */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -256,8 +250,6 @@ export default function Home() {
             <p style={{ fontSize: "16px", color: "#333", fontWeight: "500" }}>Foods Shared</p>
             <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>Meals made available</p>
           </motion.div>
-
-          {/* Stat 2: Active Members */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -283,8 +275,6 @@ export default function Home() {
             <p style={{ fontSize: "16px", color: "#333", fontWeight: "500" }}>Active Members</p>
             <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>Growing community</p>
           </motion.div>
-
-          {/* Stat 3: Food Waste Reduced */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -310,8 +300,6 @@ export default function Home() {
             <p style={{ fontSize: "16px", color: "#333", fontWeight: "500" }}>Food Waste Reduced</p>
             <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>Tons saved from landfill</p>
           </motion.div>
-
-          {/* Stat 4: Cities Connected */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}

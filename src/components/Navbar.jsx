@@ -23,7 +23,7 @@ export default function Navbar() {
       alignItems: "center",
       boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
     }}>
-      {/* Left: Logo */}
+
       <Link to="/" style={{
         fontWeight: "bold",
         fontSize: "24px",
@@ -36,7 +36,7 @@ export default function Navbar() {
         🍽️ <span style={{ color: "#28a745" }}>PlateShare</span>
       </Link>
 
-      {/* Center: Navigation Links */}
+
       <div style={{ display: "flex", gap: "30px", alignItems: "center" }}>
         <Link to="/" style={{
           marginRight: "0",
@@ -76,7 +76,7 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* Right: Auth Links or User Menu */}
+
       <div>
         {!user && (
           <div style={{ display: "flex", gap: "15px" }}>

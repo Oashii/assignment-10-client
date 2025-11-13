@@ -26,12 +26,12 @@ export default function Register() {
   const passwordValidation = validatePassword(password);
   const isPasswordValid = passwordValidation.hasUppercase && passwordValidation.hasLowercase && passwordValidation.hasMinLength;
 
-  // photo upload removed — using direct photo URL input instead
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
     
-    // Validate password before proceeding
+
     if (!isPasswordValid) {
       toast.error("❌ Password does not meet the requirements");
       return;
@@ -52,7 +52,7 @@ export default function Register() {
         return;
     }
       setIsLoading(false);
-      // Navigate after successful registration
+
       navigate("/");
   };
 

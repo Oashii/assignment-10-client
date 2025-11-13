@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 export default function ErrorPage() {
   useEffect(() => {
-    // Create keyframes for animation dynamically
+
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes float {

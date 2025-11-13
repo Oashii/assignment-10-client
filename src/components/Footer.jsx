@@ -8,7 +8,7 @@ export default function Footer() {
       padding: "30px 20px 15px",
       marginTop: "40px"
     }}>
-      {/* Top Section: Logo/Name and Social Links */}
+    
       <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -18,7 +18,7 @@ export default function Footer() {
         paddingBottom: "30px",
         borderBottom: "1px solid #eee"
       }}>
-        {/* Logo & Name (Left) */}
+
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{ fontSize: "24px" }}>🍽️</span>
           <h2 style={{ margin: "0", fontSize: "20px", fontWeight: "bold", color: "#333" }}>
@@ -26,7 +26,7 @@ export default function Footer() {
           </h2>
         </div>
 
-        {/* Social Media Links (Right) */}
+
         <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
           <a
             href="https://facebook.com"
@@ -80,7 +80,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Section: Copyright (Center) */}
+
       <div style={{
         textAlign: "center",
         padding: "20px 0",

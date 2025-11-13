@@ -16,7 +16,6 @@ export default function FoodDetails() {
     contact: "",
   });
 
-  // Fetch single food
   const { data: food, isLoading, isError } = useQuery({
     queryKey: ["food", id],
     queryFn: async () => {
@@ -25,18 +24,16 @@ export default function FoodDetails() {
     },
   });
 
-  // Fetch requests for this specific food
   const { data: foodRequests = [] } = useQuery({
     queryKey: ["foodRequests", id],
     queryFn: async () => {
       const res = await axios.get(`https://plateshare-beryl.vercel.app/requests`);
-      // Filter requests to only show those for this specific food
+
       return (res.data || []).filter((req) => req.foodId === id);
     },
     enabled: !!id,
   });
 
-  // Submit request mutation
   const requestMutation = useMutation({
     mutationFn: async (newRequest) => {
       const res = await axios.post("https://plateshare-beryl.vercel.app/requests", newRequest);
@@ -50,7 +47,6 @@ export default function FoodDetails() {
     },
   });
 
-  // Mutation for accepting/rejecting requests
   const requestActionMutation = useMutation({
     mutationFn: async ({ requestId, status }) => {
       await axios.patch(`https://plateshare-beryl.vercel.app/requests/${requestId}`, { status });
@@ -147,7 +143,6 @@ export default function FoodDetails() {
         </>
       )}
 
-      {/* Food Requests Table - Only visible to food owner */}
       {user && food && user.email === food.donorEmail && (
         <div style={{ marginTop: "40px" }}>
           <h3>Food Requests for this item</h3>

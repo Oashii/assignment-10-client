@@ -6,15 +6,15 @@ import { AuthContext } from "../provider/AuthProvider";
 export default function FoodRequests() {
   const { user } = useContext(AuthContext);
 
-  // Fetch all requests made by this user
+ 
   const { data: userRequests = [], isLoading, isError } = useQuery({
     queryKey: ["myRequests", user?.email],
     queryFn: async () => {
       const res = await axios.get("https://plateshare-beryl.vercel.app/requests");
-      // Filter requests where userEmail === logged-in user's email
+   
       const filteredRequests = res.data.filter((req) => req.userEmail === user.email);
       
-      // Fetch food details for each request
+
       const requestsWithFoodDetails = await Promise.all(
         filteredRequests.map(async (req) => {
           try {

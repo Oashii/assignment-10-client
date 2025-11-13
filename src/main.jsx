@@ -3,8 +3,8 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
-import AuthProvider from "./provider/AuthProvider"; // fixed import
-import { router } from "./components/router"; // your createBrowserRouter
+import AuthProvider from "./provider/AuthProvider";
+import { router } from "./components/router";
 
 import "./index.css";
 

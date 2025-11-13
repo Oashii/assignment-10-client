@@ -16,7 +16,6 @@ export default function ManageMyFoods() {
     description: "",
   });
 
-  // Fetch foods by the logged-in user
   const { data: foods = [], isLoading, isError } = useQuery({
     queryKey: ["myFoods", user?.email],
     queryFn: async () => {
@@ -26,7 +25,6 @@ export default function ManageMyFoods() {
     enabled: !!user,
   });
 
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
       const res = await axios.delete(`https://plateshare-beryl.vercel.app/foods/${id}`);
@@ -38,7 +36,6 @@ export default function ManageMyFoods() {
     },
   });
 
-  // Update mutation
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }) => {
       const res = await axios.patch(`https://plateshare-beryl.vercel.app/foods/${id}`, updates);

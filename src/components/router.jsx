@@ -19,11 +19,11 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />, // Banner + Featured Foods
+        element: <Home />,
       },
       {
         path: "/foods",
-        element: <FoodList />, // Available Foods
+        element: <FoodList />,
       },
       {
         path: "/add-food",
@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
         path: "/food/:id",
         element: (
           <PrivateRoute>
-            <FoodDetails /> {/* Shows food info + request button */}
+            <FoodDetails />
           </PrivateRoute>
         ),
       },
@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
         path: "/requests",
         element: (
           <PrivateRoute>
-            <FoodRequests /> {/* Food owner sees incoming requests */}
+            <FoodRequests />
           </PrivateRoute>
         ),
       },
@@ -69,6 +69,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <ErrorPage />, // 404 page
+    element: <ErrorPage />,
   },
 ]);
