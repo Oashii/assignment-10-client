@@ -1,11 +1,14 @@
 import { useState, useContext } from "react";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import toast from "react-hot-toast";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { auth } from "../firebase.config";
 import { AuthContext } from "../provider/AuthProvider";
 
 export default function Login() {
-  const { user } = useContext(AuthContext); // <-- now used
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,8 +17,10 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("✅ Login successful!");
-    } catch (err) {
-      toast.error(err.message);
+      const from = location.state?.from?.pathname || "/";
+      navigate(from);
+    } catch {
+      toast.error("Failed logging in");
     }
   };
 
@@ -23,8 +28,11 @@ export default function Login() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (err) {
-      toast.error(err.message);
+      toast.success("✅ Login successful!");
+      const from = location.state?.from?.pathname || "/";
+      navigate(from);
+    } catch {
+      toast.error("Failed logging in");
     }
   };
 
@@ -40,6 +48,8 @@ export default function Login() {
       </form>
       <br />
       <button onClick={handleGoogleLogin}>Login with Google</button>
+      <br />
+      <p>Don't have an account? <Link to="/register">Register here</Link></p>
       {user && <p>Logged in as: {user.displayName || user.email}</p>} {/* optional display */}
     </div>
   );

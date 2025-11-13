@@ -31,10 +31,10 @@ export default function Home() {
       <p>Share your surplus food and help the community.</p>
 
       <h2>Featured Foods</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "20px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
         {featured.map((food) => (
           <div key={food._id} style={{ border: "1px solid #ccc", borderRadius: "10px", padding: "10px" }}>
-            <img src={food.image} alt={food.name} style={{ width: "100%", borderRadius: "10px" }} />
+            <img src={food.image} alt={food.name} style={{ width: "100%", height: "250px", objectFit: "cover", borderRadius: "10px" }} />
             <h3>{food.name}</h3>
             <p><b>Donor:</b> {food.donor}</p>
             <p><b>Quantity:</b> {food.quantity}</p>
