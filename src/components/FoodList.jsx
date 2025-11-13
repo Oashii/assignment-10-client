@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Loader from "./Loader";
+
 
 const fetchFoods = async () => {
-  const res = await axios.get("http://localhost:3000/foods");
+  const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
   return res.data;
 };
 
@@ -13,7 +15,7 @@ export default function FoodList() {
     queryFn: fetchFoods,
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loader />;
   if (isError) return <p>Something went wrong!</p>;
 
   return (

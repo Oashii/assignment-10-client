@@ -20,6 +20,7 @@
     "react-firebase-hooks": "^5.1.1",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.9.5",
+    "styled-components": "^6.1.19",
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {

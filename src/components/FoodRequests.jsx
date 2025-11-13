@@ -10,7 +10,7 @@ export default function FoodRequests() {
   const { data: userRequests = [], isLoading, isError } = useQuery({
     queryKey: ["myRequests", user?.email],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3000/requests");
+      const res = await axios.get("https://plateshare-beryl.vercel.app/requests");
       // Filter requests where userEmail === logged-in user's email
       const filteredRequests = res.data.filter((req) => req.userEmail === user.email);
       
@@ -18,7 +18,7 @@ export default function FoodRequests() {
       const requestsWithFoodDetails = await Promise.all(
         filteredRequests.map(async (req) => {
           try {
-            const foodRes = await axios.get(`http://localhost:3000/foods/${req.foodId}`);
+            const foodRes = await axios.get(`https://plateshare-beryl.vercel.app/foods/${req.foodId}`);
             return { ...req, foodDetails: foodRes.data };
           } catch {
             return { ...req, foodDetails: null };

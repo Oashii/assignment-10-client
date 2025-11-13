@@ -23,7 +23,7 @@ export default function AddFood() {
 
   const mutation = useMutation({
     mutationFn: async (newFood) => {
-      const res = await axios.post("http://localhost:3000/foods", newFood);
+      const res = await axios.post("https://plateshare-beryl.vercel.app/foods", newFood);
       return res.data;
     },
     onSuccess: () => {

@@ -20,7 +20,7 @@ export default function FoodDetails() {
   const { data: food, isLoading, isError } = useQuery({
     queryKey: ["food", id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:3000/foods/${id}`);
+      const res = await axios.get(`https://plateshare-beryl.vercel.app/foods/${id}`);
       return res.data;
     },
   });
@@ -29,7 +29,7 @@ export default function FoodDetails() {
   const { data: foodRequests = [] } = useQuery({
     queryKey: ["foodRequests", id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:3000/requests`);
+      const res = await axios.get(`https://plateshare-beryl.vercel.app/requests`);
       // Filter requests to only show those for this specific food
       return (res.data || []).filter((req) => req.foodId === id);
     },
@@ -39,7 +39,7 @@ export default function FoodDetails() {
   // Submit request mutation
   const requestMutation = useMutation({
     mutationFn: async (newRequest) => {
-      const res = await axios.post("http://localhost:3000/requests", newRequest);
+      const res = await axios.post("https://plateshare-beryl.vercel.app/requests", newRequest);
       return res.data;
     },
     onSuccess: () => {
@@ -53,9 +53,9 @@ export default function FoodDetails() {
   // Mutation for accepting/rejecting requests
   const requestActionMutation = useMutation({
     mutationFn: async ({ requestId, status }) => {
-      await axios.patch(`http://localhost:3000/requests/${requestId}`, { status });
+      await axios.patch(`https://plateshare-beryl.vercel.app/requests/${requestId}`, { status });
       if (status === "accepted") {
-        await axios.patch(`http://localhost:3000/foods/${id}`, { food_status: "donated" });
+        await axios.patch(`https://plateshare-beryl.vercel.app/foods/${id}`, { food_status: "donated" });
       }
     },
     onSuccess: (_, { status }) => {

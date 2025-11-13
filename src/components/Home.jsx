@@ -7,7 +7,7 @@ import bannerImage from "../assets/banner.jpg";
 import { motion } from "framer-motion";
 
 const fetchFoods = async () => {
-  const res = await axios.get("http://localhost:3000/foods");
+  const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
   return res.data;
 };
 

@@ -20,7 +20,7 @@ export default function ManageMyFoods() {
   const { data: foods = [], isLoading, isError } = useQuery({
     queryKey: ["myFoods", user?.email],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:3000/foods");
+      const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
       return res.data.filter((food) => food.donorEmail === user.email);
     },
     enabled: !!user,
@@ -29,7 +29,7 @@ export default function ManageMyFoods() {
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await axios.delete(`http://localhost:3000/foods/${id}`);
+      const res = await axios.delete(`https://plateshare-beryl.vercel.app/foods/${id}`);
       return res.data;
     },
     onSuccess: () => {
@@ -41,7 +41,7 @@ export default function ManageMyFoods() {
   // Update mutation
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }) => {
-      const res = await axios.patch(`http://localhost:3000/foods/${id}`, updates);
+      const res = await axios.patch(`https://plateshare-beryl.vercel.app/foods/${id}`, updates);
       return res.data;
     },
     onSuccess: () => {
