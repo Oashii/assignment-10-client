@@ -95,39 +95,48 @@ export default function FoodDetails() {
 
       {user && (
         <>
-          <button onClick={() => setShowRequestModal(true)}>Request Food</button>
+          <button style={{background: "#28a745", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer"}} onClick={() => setShowRequestModal(true)}>Request Food</button>
 
           {showRequestModal && (
             <div style={modalStyles.overlay}>
               <div style={modalStyles.modal}>
-                <h3>Request Food</h3>
+                <h3 style={{textAlign:"center"}}>Request Food</h3>
                 <form onSubmit={handleSubmit}>
-                  <input
+                  <div style={{display:"flex", gap:"5px", alignItems:"center", justifyContent:"center"}}>
+                    <p>Location:</p>
+                    <input
                     type="text"
                     placeholder="Your Pickup Location"
                     value={requestData.location}
                     onChange={(e) => setRequestData({ ...requestData, location: e.target.value })}
                     required
                   />
+                  </div>
                   <br />
-                  <textarea
+                  <div style={{display:"flex", gap:"5px", alignItems:"center", justifyContent:"center"}}>
+                    <p>Reason:</p>
+                    <textarea
                     placeholder="Why do you need this food?"
                     value={requestData.reason}
                     onChange={(e) => setRequestData({ ...requestData, reason: e.target.value })}
                     required
                   ></textarea>
+                  </div>
                   <br />
-                  <input
+                  <div style={{display:"flex", gap:"5px", alignItems:"center", justifyContent:"center"}}>
+                    <p>Contact:</p>
+                    <input
                     type="text"
                     placeholder="Your Contact Number"
                     value={requestData.contact}
                     onChange={(e) => setRequestData({ ...requestData, contact: e.target.value })}
                     required
                   />
+                  </div>
                   <br />
-                  <div style={{ marginTop: "10px" }}>
-                    <button type="submit">Submit Request</button>
-                    <button type="button" onClick={() => setShowRequestModal(false)} style={{ marginLeft: "10px" }}>
+                  <div style={{ marginTop: "10px", textAlign: "center" }}>
+                    <button type="submit" style={{background: "#28a745", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer"}}>Submit Request</button>
+                    <button type="button" onClick={() => setShowRequestModal(false)} style={{ marginLeft: "10px", background: "#dc3545", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer" }}>
                       Cancel
                     </button>
                   </div>

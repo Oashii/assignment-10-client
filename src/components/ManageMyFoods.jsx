@@ -34,7 +34,7 @@ export default function ManageMyFoods() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["myFoods", user?.email]);
-      toast.success("✅ Food deleted successfully!");
+      toast.success("Food deleted successfully!");
     },
   });
 
@@ -46,7 +46,7 @@ export default function ManageMyFoods() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["myFoods", user?.email]);
-      toast.success("✅ Food updated successfully!");
+      toast.success("Food updated successfully!");
       setEditingFood(null);
       setFormData({ name: "", quantity: "", location: "", description: "" });
     },
@@ -73,8 +73,10 @@ export default function ManageMyFoods() {
   if (isError) return <p>Failed to load foods.</p>;
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Manage My Foods 🍱</h2>
+    <div>
+      <h2 style={{textAlign:"center"}}>Manage My Foods</h2>
+    <div style={{ padding: "20px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px" }}>
+      
       {foods.length === 0 && <p>No foods added yet.</p>}
 
       {foods.map((food) => (
@@ -85,23 +87,27 @@ export default function ManageMyFoods() {
             borderRadius: "10px",
             padding: "10px",
             marginTop: "10px",
+            
           }}
         >
+          <img src={food.image} alt={food.name} style={{ width: "100%", height: "250px", objectFit: "cover", borderRadius: "10px" }} />
           <h3>{food.name}</h3>
           <p><b>Location:</b> {food.location}</p>
           <p><b>Quantity:</b> {food.quantity}</p>
           <p>{food.description}</p>
-          <button
+          <div style={{textAlign:"center"}}>
+            <button
             onClick={() => {
               if (confirm("Are you sure you want to delete this food?")) {
                 deleteMutation.mutate(food._id);
               }
             }}
-            style={{ marginRight: "10px" }}
+            style={{ marginRight: "10px", background: "#dc3545", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer" }}
           >
             Delete
           </button>
-          <button onClick={() => openEditModal(food)}>Update</button>
+          <button onClick={() => openEditModal(food)} style={{background: "#28a745", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer"}}>Update</button>
+          </div>
         </div>
       ))}
 
@@ -125,9 +131,12 @@ export default function ManageMyFoods() {
             borderRadius: "10px",
             width: "400px",
             position: "relative",
+            textAlign: "center"
           }}>
             <h3>Update Food</h3>
             <form onSubmit={handleUpdateSubmit}>
+              <div style={{display:"flex", gap:"5px", alignItems:"center", justifyContent:"center"}}>
+                <p>Food Name:</p>
               <input
                 type="text"
                 placeholder="Food Name"
@@ -135,7 +144,10 @@ export default function ManageMyFoods() {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
               />
-              <br />
+              </div>
+              
+              <div style={{display:"flex", gap:"23px", alignItems:"center", justifyContent:"center"}}>
+                <p>Quantity:</p>
               <input
                 type="text"
                 placeholder="Quantity"
@@ -143,7 +155,10 @@ export default function ManageMyFoods() {
                 onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                 required
               />
-              <br />
+              </div>
+              
+              <div style={{display:"flex", gap:"23px", alignItems:"center", justifyContent:"center"}}>
+                <p>Location:</p>
               <input
                 type="text"
                 placeholder="Location"
@@ -151,19 +166,23 @@ export default function ManageMyFoods() {
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 required
               />
-              <br />
+              </div>
+              
+              <div style={{display:"flex", gap:"5px", alignItems:"center", justifyContent:"center"}}>
+              <p>Description:</p>
               <textarea
                 placeholder="Description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 required
               ></textarea>
+              </div>
               <br />
-              <button type="submit">Save Changes</button>
+              <button type="submit" style={{background: "#28a745", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer"}}>Save Changes</button>
               <button
                 type="button"
                 onClick={() => setEditingFood(null)}
-                style={{ marginLeft: "10px" }}
+                style={{ marginLeft: "10px", background: "#dc3545", color: "white", border: "none", padding: "8px 12px", borderRadius: "5px", cursor: "pointer" }}
               >
                 Cancel
               </button>
@@ -171,6 +190,7 @@ export default function ManageMyFoods() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

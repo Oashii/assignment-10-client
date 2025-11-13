@@ -73,43 +73,203 @@ export default function Register() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} required />
-        <br />
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
-        <br />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
-        <br />
-        {password && (
-          <div style={{ marginBottom: "10px", fontSize: "14px" }}>
-            <p style={{ color: passwordValidation.hasUppercase ? "green" : "red", margin: "5px 0" }}>
-              {passwordValidation.hasUppercase ? "✅" : "❌"} Must have an Uppercase letter
-            </p>
-            <p style={{ color: passwordValidation.hasLowercase ? "green" : "red", margin: "5px 0" }}>
-              {passwordValidation.hasLowercase ? "✅" : "❌"} Must have a Lowercase letter
-            </p>
-            <p style={{ color: passwordValidation.hasMinLength ? "green" : "red", margin: "5px 0" }}>
-              {passwordValidation.hasMinLength ? "✅" : "❌"} Length must be at least 6 characters
-            </p>
-          </div>
-        )}
-        <input
-          type="url"
-          placeholder="Photo URL"
-          value={photoUrl}
-          onChange={e => setPhotoUrl(e.target.value)}
-        />
-        <br />
-          <button type="submit" disabled={!isPasswordValid || !name || !email || isLoading}>
-            {isLoading ? "Registering..." : "Register"}
-          </button>
-      </form>
-      <br />
-        <button onClick={handleGoogleLogin} disabled={isLoading}>
-          {isLoading ? "Processing..." : "Register/Login with Google"}
-        </button>
-    </div>
+    <div
+  style={{
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#f5f7fa",
+    fontFamily: "Poppins, sans-serif",
+    boxSizing: "border-box",
+  }}
+>
+  <div
+    style={{
+      background: "#fff",
+      padding: "40px",
+      borderRadius: "12px",
+      boxShadow: "0 6px 18px rgba(0, 0, 0, 0.1)",
+      width: "100%",
+      maxWidth: "380px",
+      textAlign: "center",
+      boxSizing: "border-box",
+    }}
+  >
+    <h2 style={{ color: "#4a4a4a", marginBottom: "25px" }}>Register</h2>
+
+    <form
+      onSubmit={handleRegister}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          marginBottom: "15px",
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          fontSize: "15px",
+          boxSizing: "border-box",
+        }}
+      />
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          marginBottom: "15px",
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          fontSize: "15px",
+          boxSizing: "border-box",
+        }}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          marginBottom: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          fontSize: "15px",
+          boxSizing: "border-box",
+        }}
+      />
+
+      {password && (
+        <div
+          style={{
+            marginBottom: "10px",
+            fontSize: "14px",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          <p
+            style={{
+              color: passwordValidation.hasUppercase ? "green" : "red",
+              margin: "4px 0",
+            }}
+          >
+            {passwordValidation.hasUppercase ? "✅" : "❌"} Must have an Uppercase letter
+          </p>
+          <p
+            style={{
+              color: passwordValidation.hasLowercase ? "green" : "red",
+              margin: "4px 0",
+            }}
+          >
+            {passwordValidation.hasLowercase ? "✅" : "❌"} Must have a Lowercase letter
+          </p>
+          <p
+            style={{
+              color: passwordValidation.hasMinLength ? "green" : "red",
+              margin: "4px 0",
+            }}
+          >
+            {passwordValidation.hasMinLength ? "✅" : "❌"} Length must be at least 6 characters
+          </p>
+        </div>
+      )}
+
+      <input
+        type="url"
+        placeholder="Photo URL"
+        value={photoUrl}
+        onChange={(e) => setPhotoUrl(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          marginBottom: "15px",
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          fontSize: "15px",
+          boxSizing: "border-box",
+        }}
+      />
+
+      <button
+        type="submit"
+        disabled={!isPasswordValid || !name || !email || isLoading}
+        style={{
+          width: "100%",
+          background: "#4f46e5",
+          color: "#fff",
+          border: "none",
+          padding: "10px",
+          fontSize: "16px",
+          borderRadius: "6px",
+          cursor:
+            isPasswordValid && name && email && !isLoading
+              ? "pointer"
+              : "not-allowed",
+          opacity:
+            !isPasswordValid || !name || !email || isLoading ? 0.6 : 1,
+          transition: "background 0.3s ease",
+          boxSizing: "border-box",
+        }}
+        onMouseOver={(e) =>
+          !isLoading && (e.target.style.background = "#4338ca")
+        }
+        onMouseOut={(e) =>
+          !isLoading && (e.target.style.background = "#4f46e5")
+        }
+      >
+        {isLoading ? "Registering..." : "Register"}
+      </button>
+    </form>
+
+    <button
+      onClick={handleGoogleLogin}
+      disabled={isLoading}
+      style={{
+        width: "100%",
+        background: "#db4437",
+        color: "#fff",
+        border: "none",
+        padding: "10px",
+        marginTop: "10px",
+        fontSize: "16px",
+        borderRadius: "6px",
+        cursor: isLoading ? "not-allowed" : "pointer",
+        opacity: isLoading ? 0.6 : 1,
+        transition: "background 0.3s ease",
+        boxSizing: "border-box",
+      }}
+      onMouseOver={(e) =>
+        !isLoading && (e.target.style.background = "#c1351d")
+      }
+      onMouseOut={(e) =>
+        !isLoading && (e.target.style.background = "#db4437")
+      }
+    >
+      {isLoading ? "Processing..." : "Register / Login with Google"}
+    </button>
+  </div>
+</div>
+
+
   );
 }

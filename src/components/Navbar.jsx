@@ -81,12 +81,14 @@ export default function Navbar() {
         {!user && (
           <div style={{ display: "flex", gap: "15px" }}>
             <Link to="/login" style={{
-              marginRight: "0",
+              padding: "8px 16px",
+              backgroundColor: "#28a745",
+              color: "white",
               textDecoration: "none",
-              color: "#333",
+              borderRadius: "5px",
               fontSize: "14px",
               fontWeight: "500",
-              transition: "color 0.3s"
+              transition: "background 0.3s"
             }}
             onMouseEnter={(e) => e.target.style.color = "#28a745"}
             onMouseLeave={(e) => e.target.style.color = "#333"}>
