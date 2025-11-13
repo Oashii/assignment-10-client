@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import toast from "react-hot-toast";
 import { auth } from "../firebase.config";
 import { AuthContext } from "../provider/AuthProvider";
 
@@ -12,9 +13,9 @@ export default function Login() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("✅ Login successful!");
+      toast.success("✅ Login successful!");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -23,7 +24,7 @@ export default function Login() {
     try {
       await signInWithPopup(auth, provider);
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

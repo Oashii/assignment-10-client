@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import toast from "react-hot-toast";
 import { auth } from "../firebase.config";
 import { AuthContext } from "../provider/AuthProvider";
 
@@ -14,9 +15,9 @@ export default function Register() {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(result.user, { displayName: name });
-      alert("✅ Registration successful!");
+      toast.success("✅ Registration successful!");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -25,7 +26,7 @@ export default function Register() {
     try {
       await signInWithPopup(auth, provider);
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

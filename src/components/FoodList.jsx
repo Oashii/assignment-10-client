@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const fetchFoods = async () => {
   const res = await axios.get("http://localhost:3000/foods");
@@ -19,35 +19,46 @@ export default function FoodList() {
   return (
     <div style={{ padding: "20px" }}>
       <h2>Available Foods</h2>
-      <div style={{ display: "grid", gap: "20px", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}>
+  <div style={{ display: "grid", gap: "20px", gridTemplateColumns: "repeat(4, 1fr)", alignItems: "start" }}>
         {foods.map((food) => (
-          
-
-          <div
+          <Link
+            to={`/food/${food._id}`}
             key={food._id}
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "10px",
-              padding: "10px",
-              background: "#f9f9f9",
-            }}
+            style={{ textDecoration: "none", color: "inherit", display: "block" }}
           >
-            {food.image && (
-              <img
-                src={food.image}
-                alt={food.name}
-                style={{ width: "100%", height: "150px", objectFit: "cover", borderRadius: "5px" }}
-              />
-            )}
-            <h3>{food.name}</h3>
-            <p><b>Donor:</b> {food.donor}</p>
-            <p><b>Location:</b> {food.location}</p>
-            <p><b>Quantity:</b> {food.quantity}</p>
-            <p><b>Status:</b> {food.food_status === "donated" ? "Donated" : "Available"}</p>
-            <p>{food.description}</p>
-          
-          </div>
-                    
+            <div
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "10px",
+                padding: "10px",
+                background: "#f9f9f9",
+                cursor: "pointer",
+                transition: "transform 0.2s, box-shadow 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-5px)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {food.image && (
+                <img
+                  src={food.image}
+                  alt={food.name}
+                  style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "5px", display: "block" }}
+                />
+              )}
+              <h3>{food.name}</h3>
+              <p><b>Donor:</b> {food.donor}</p>
+              <p><b>Location:</b> {food.location}</p>
+              <p><b>Quantity:</b> {food.quantity}</p>
+              <p><b>Status:</b> {food.food_status === "donated" ? "Donated" : "Available"}</p>
+              <p>{food.description}</p>
+            </div>
+          </Link>
         ))}
       </div>
     </div>

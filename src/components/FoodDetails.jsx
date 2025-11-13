@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 import { AuthContext } from "../provider/AuthProvider";
 
 export default function FoodDetails() {
@@ -31,7 +32,7 @@ export default function FoodDetails() {
       return res.data;
     },
     onSuccess: () => {
-      alert("✅ Request submitted!");
+      toast.success("✅ Request submitted!");
       setShowRequestModal(false);
       setRequestData({ location: "", reason: "", contact: "" });
       queryClient.invalidateQueries(["requests"]);

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState, useContext } from "react";
+import toast from "react-hot-toast";
 import { AuthContext } from "../provider/AuthProvider";
 
 export default function AddFood() {
@@ -23,7 +24,7 @@ export default function AddFood() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["foods"]);
-      alert("✅ Food added successfully!");
+      toast.success("✅ Food added successfully!");
       setFormData({
         name: "",
         location: "",

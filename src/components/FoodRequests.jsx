@@ -13,7 +13,21 @@ export default function FoodRequests() {
     queryFn: async () => {
       const res = await axios.get("http://localhost:3000/requests");
       // filter requests where foodOwnerEmail === user.email
-      return res.data.filter((req) => req.foodOwnerEmail === user.email);
+      const filteredRequests = res.data.filter((req) => req.foodOwnerEmail === user.email);
+      
+      // Fetch food details for each request
+      const requestsWithFoodNames = await Promise.all(
+        filteredRequests.map(async (req) => {
+          try {
+            const foodRes = await axios.get(`http://localhost:3000/foods/${req.foodId}`);
+            return { ...req, foodName: foodRes.data.name };
+          } catch {
+            return { ...req, foodName: "Unknown" };
+          }
+        })
+      );
+      
+      return requestsWithFoodNames;
     },
   });
 
@@ -50,6 +64,7 @@ export default function FoodRequests() {
           <thead>
             <tr>
               <th>Requester</th>
+              <th>Food</th>
               <th>Location</th>
               <th>Reason</th>
               <th>Contact</th>
@@ -60,7 +75,11 @@ export default function FoodRequests() {
           <tbody>
             {requests.map((req) => (
               <tr key={req._id} style={{ borderBottom: "1px solid #ccc" }}>
-                <td>{req.userName}</td>
+                <td>
+                  <div><b>{req.userName}</b></div>
+                  <div style={{ fontSize: "0.9em", color: "#666" }}>{req.userEmail}</div>
+                </td>
+                <td>{req.foodName}</td>
                 <td>{req.location}</td>
                 <td>{req.reason}</td>
                 <td>{req.contact}</td>

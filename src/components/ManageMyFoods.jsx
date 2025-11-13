@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 import { AuthContext } from "../provider/AuthProvider";
 
 export default function ManageMyFoods() {
@@ -33,7 +34,7 @@ export default function ManageMyFoods() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["myFoods", user?.email]);
-      alert("✅ Food deleted successfully!");
+      toast.success("✅ Food deleted successfully!");
     },
   });
 
@@ -45,7 +46,7 @@ export default function ManageMyFoods() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["myFoods", user?.email]);
-      alert("✅ Food updated successfully!");
+      toast.success("✅ Food updated successfully!");
       setEditingFood(null);
       setFormData({ name: "", quantity: "", location: "", description: "" });
     },
