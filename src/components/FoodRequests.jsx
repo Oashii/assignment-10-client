@@ -56,7 +56,7 @@ export default function FoodRequests() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Food Requests</h2>
+      <h2>My Food Requests</h2>
       {requests.length === 0 ? (
         <p>No requests yet.</p>
       ) : (

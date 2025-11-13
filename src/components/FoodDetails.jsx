@@ -25,6 +25,17 @@ export default function FoodDetails() {
     },
   });
 
+  // Fetch requests for this specific food
+  const { data: foodRequests = [] } = useQuery({
+    queryKey: ["foodRequests", id],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:3000/requests`);
+      // Filter requests to only show those for this specific food
+      return (res.data || []).filter((req) => req.foodId === id);
+    },
+    enabled: !!id,
+  });
+
   // Submit request mutation
   const requestMutation = useMutation({
     mutationFn: async (newRequest) => {
@@ -36,6 +47,24 @@ export default function FoodDetails() {
       setShowRequestModal(false);
       setRequestData({ location: "", reason: "", contact: "" });
       queryClient.invalidateQueries(["requests"]);
+    },
+  });
+
+  // Mutation for accepting/rejecting requests
+  const requestActionMutation = useMutation({
+    mutationFn: async ({ requestId, status }) => {
+      await axios.patch(`http://localhost:3000/requests/${requestId}`, { status });
+      if (status === "accepted") {
+        await axios.patch(`http://localhost:3000/foods/${id}`, { food_status: "donated" });
+      }
+    },
+    onSuccess: (_, { status }) => {
+      toast.success(`✅ Request ${status}!`);
+      queryClient.invalidateQueries(["foodRequests", id]);
+      queryClient.invalidateQueries(["food", id]);
+    },
+    onError: () => {
+      toast.error("❌ Failed to update request");
     },
   });
 
@@ -107,6 +136,90 @@ export default function FoodDetails() {
             </div>
           )}
         </>
+      )}
+
+      {/* Food Requests Table - Only visible to food owner */}
+      {user && food && user.email === food.donorEmail && (
+        <div style={{ marginTop: "40px" }}>
+          <h3>Food Requests for this item</h3>
+          {foodRequests.length === 0 ? (
+            <p>No requests yet.</p>
+          ) : (
+            <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
+              <thead>
+                <tr style={{ backgroundColor: "#f5f5f5" }}>
+                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ccc" }}>Requester Name</th>
+                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ccc" }}>Email</th>
+                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ccc" }}>Pickup Location</th>
+                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ccc" }}>Reason</th>
+                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ccc" }}>Contact</th>
+                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ccc" }}>Status</th>
+                  <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ccc" }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {foodRequests.map((req) => (
+                  <tr key={req._id} style={{ borderBottom: "1px solid #eee" }}>
+                    <td style={{ padding: "12px" }}><b>{req.userName}</b></td>
+                    <td style={{ padding: "12px" }}>{req.userEmail}</td>
+                    <td style={{ padding: "12px" }}>{req.location}</td>
+                    <td style={{ padding: "12px" }}>{req.reason}</td>
+                    <td style={{ padding: "12px" }}>{req.contact}</td>
+                    <td style={{ padding: "12px" }}>
+                      <span style={{
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        backgroundColor: req.status === "accepted" ? "#d4edda" : req.status === "rejected" ? "#f8d7da" : "#cfe2ff",
+                        color: req.status === "accepted" ? "#155724" : req.status === "rejected" ? "#721c24" : "#004085"
+                      }}>
+                        {req.status}
+                      </span>
+                    </td>
+                    <td style={{ padding: "12px" }}>
+                      {req.status === "pending" && (
+                        <>
+                          <button
+                            onClick={() => requestActionMutation.mutate({ requestId: req._id, status: "accepted" })}
+                            style={{
+                              marginRight: "5px",
+                              padding: "6px 12px",
+                              backgroundColor: "#28a745",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              transition: "background 0.2s"
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => requestActionMutation.mutate({ requestId: req._id, status: "rejected" })}
+                            style={{
+                              padding: "6px 12px",
+                              backgroundColor: "#dc3545",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              transition: "background 0.2s"
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = "#c82333"}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = "#dc3545"}
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       )}
     </div>
   );
