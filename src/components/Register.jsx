@@ -33,7 +33,7 @@ export default function Register() {
     
 
     if (!isPasswordValid) {
-      toast.error("❌ Password does not meet the requirements");
+      toast.error("Password does not meet the requirements");
       return;
     }
 
@@ -45,7 +45,7 @@ export default function Register() {
         displayName: name,
         photoURL: photoURL
       });
-      toast.success("✅ Registration successful!");
+      toast.success("Registration successful!");
     } catch (err) {
         setIsLoading(false);
       toast.error(err.message);
@@ -61,7 +61,7 @@ export default function Register() {
       setIsLoading(true);
     try {
       await signInWithPopup(auth, provider);
-        toast.success("✅ Login successful!");
+        toast.success("Login successful!");
         setIsLoading(false);
         navigate("/");
     } catch (err) {

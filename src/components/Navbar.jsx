@@ -9,7 +9,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logOut()
-      .then(() => toast.success("✅ Logged out successfully"))
+      .then(() => toast.success("Logged out successfully"))
       .catch((err) => console.log(err));
   };
 

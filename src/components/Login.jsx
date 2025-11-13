@@ -16,7 +16,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success("✅ Login successful!");
+      toast.success("Login successful!");
       const from = location.state?.from?.pathname || "/";
       navigate(from);
     } catch {
@@ -28,7 +28,7 @@ export default function Login() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      toast.success("✅ Login successful!");
+      toast.success("Login successful!");
       const from = location.state?.from?.pathname || "/";
       navigate(from);
     } catch {
