@@ -1,18 +1,26 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
 export default function ManageMyFoods() {
   const { user, loading } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
+  const [editingFood, setEditingFood] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    quantity: "",
+    location: "",
+    description: "",
+  });
+
   // Fetch foods by the logged-in user
   const { data: foods = [], isLoading, isError } = useQuery({
     queryKey: ["myFoods", user?.email],
     queryFn: async () => {
       const res = await axios.get("http://localhost:3000/foods");
-      return res.data.filter(food => food.donorEmail === user.email);
+      return res.data.filter((food) => food.donorEmail === user.email);
     },
     enabled: !!user,
   });
@@ -29,6 +37,35 @@ export default function ManageMyFoods() {
     },
   });
 
+  // Update mutation
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, updates }) => {
+      const res = await axios.patch(`http://localhost:3000/foods/${id}`, updates);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["myFoods", user?.email]);
+      alert("✅ Food updated successfully!");
+      setEditingFood(null);
+      setFormData({ name: "", quantity: "", location: "", description: "" });
+    },
+  });
+
+  const openEditModal = (food) => {
+    setEditingFood(food._id);
+    setFormData({
+      name: food.name,
+      quantity: food.quantity,
+      location: food.location,
+      description: food.description,
+    });
+  };
+
+  const handleUpdateSubmit = (e) => {
+    e.preventDefault();
+    updateMutation.mutate({ id: editingFood, updates: formData });
+  };
+
   if (loading) return <p>Loading...</p>;
   if (!user) return <p>Please login to manage your foods.</p>;
   if (isLoading) return <p>Loading your foods...</p>;
@@ -38,7 +75,8 @@ export default function ManageMyFoods() {
     <div style={{ padding: "20px" }}>
       <h2>Manage My Foods 🍱</h2>
       {foods.length === 0 && <p>No foods added yet.</p>}
-      {foods.map(food => (
+
+      {foods.map((food) => (
         <div
           key={food._id}
           style={{
@@ -62,14 +100,76 @@ export default function ManageMyFoods() {
           >
             Delete
           </button>
-          {/* Update button navigates to update page or opens modal */}
-          <button
-            onClick={() => alert("Update feature coming soon!")}
-          >
-            Update
-          </button>
+          <button onClick={() => openEditModal(food)}>Update</button>
         </div>
       ))}
+
+      {/* Modal */}
+      {editingFood && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000,
+        }}>
+          <div style={{
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "10px",
+            width: "400px",
+            position: "relative",
+          }}>
+            <h3>Update Food</h3>
+            <form onSubmit={handleUpdateSubmit}>
+              <input
+                type="text"
+                placeholder="Food Name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+              <br />
+              <input
+                type="text"
+                placeholder="Quantity"
+                value={formData.quantity}
+                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                required
+              />
+              <br />
+              <input
+                type="text"
+                placeholder="Location"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                required
+              />
+              <br />
+              <textarea
+                placeholder="Description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                required
+              ></textarea>
+              <br />
+              <button type="submit">Save Changes</button>
+              <button
+                type="button"
+                onClick={() => setEditingFood(null)}
+                style={{ marginLeft: "10px" }}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
