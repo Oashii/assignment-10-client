@@ -1,0 +1,42 @@
+/* Desktop Navigation - Visible on desktop only */
+.navbar-desktop-menu {
+  display: flex !important;
+}
+
+/* Hamburger Button - Hidden on desktop */
+.navbar-hamburger {
+  display: none !important;
+}
+
+/* Mobile Menu - Hidden on desktop */
+.navbar-mobile-menu {
+  display: none !important;
+}
+
+/* Username - Visible on desktop */
+.navbar-username {
+  display: inline !important;
+}
+
+/* Tablet and Mobile Styles */
+@media (max-width: 768px) {
+  /* Hide desktop menu on tablet and below */
+  .navbar-desktop-menu {
+    display: none !important;
+  }
+
+  /* Show hamburger button on tablet and below */
+  .navbar-hamburger {
+    display: flex !important;
+  }
+
+  /* Show mobile menu when opened */
+  .navbar-mobile-menu {
+    display: flex !important;
+  }
+
+  /* Hide username on tablet and below */
+  .navbar-username {
+    display: none !important;
+  }
+}

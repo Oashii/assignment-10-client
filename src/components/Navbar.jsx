@@ -4,16 +4,28 @@ import { AuthContext } from "../provider/AuthProvider";
 import { ThemeContext } from "../provider/ThemeProvider";
 import { Link } from "react-router-dom";
 import { spacing, breakpoints } from "../theme/theme";
+import "./Navbar.css";
 
 export default function Navbar() {
   const { user, logOut } = useContext(AuthContext);
   const { isDarkMode, toggleTheme, theme } = useContext(ThemeContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logOut()
       .then(() => toast.success("Logged out successfully"))
       .catch((err) => console.log(err));
+  };
+
+  const navLinkStyle = {
+    marginRight: "0",
+    textDecoration: "none",
+    color: theme.text,
+    fontSize: "14px",
+    fontWeight: "500",
+    transition: "color 0.3s, transform 0.3s",
+    cursor: "pointer"
   };
 
   return (
@@ -31,28 +43,70 @@ export default function Navbar() {
       transition: "background-color 0.3s ease"
     }}>
 
-      <Link to="/" style={{
-        fontWeight: "bold",
-        fontSize: "24px",
-        textDecoration: "none",
-        color: theme.text,
-        display: "flex",
-        alignItems: "center",
-        gap: spacing.sm
-      }}>
-        🍽️ <span style={{ color: theme.primary }}>PlateShare</span>
-      </Link>
+      {/* Left Section - Hamburger + Logo */}
+      <div style={{ display: "flex", gap: spacing.md, alignItems: "center" }}>
+        {/* Hamburger Menu - Visible only on tablet and below */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="navbar-hamburger"
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "5px",
+            padding: "8px"
+          }}
+          title="Menu"
+        >
+          <span style={{
+            width: "24px",
+            height: "3px",
+            background: theme.text,
+            borderRadius: "2px",
+            transition: "all 0.3s",
+            transform: mobileMenuOpen ? "rotate(45deg) translateY(10px)" : "rotate(0)"
+          }}></span>
+          <span style={{
+            width: "24px",
+            height: "3px",
+            background: theme.text,
+            borderRadius: "2px",
+            transition: "all 0.3s",
+            opacity: mobileMenuOpen ? "0" : "1"
+          }}></span>
+          <span style={{
+            width: "24px",
+            height: "3px",
+            background: theme.text,
+            borderRadius: "2px",
+            transition: "all 0.3s",
+            transform: mobileMenuOpen ? "rotate(-45deg) translateY(-10px)" : "rotate(0)"
+          }}></span>
+        </button>
 
-
-      <div style={{ display: "flex", gap: spacing.xl, alignItems: "center", "@media": `(max-width: ${breakpoints.tablet})` }}>
         <Link to="/" style={{
-          marginRight: "0",
+          fontWeight: "bold",
+          fontSize: "24px",
           textDecoration: "none",
           color: theme.text,
-          fontSize: "14px",
-          fontWeight: "500",
-          transition: "color 0.3s, transform 0.3s"
-        }}
+          display: "flex",
+          alignItems: "center",
+          gap: spacing.sm
+        }}>
+          🍽️ <span style={{ color: theme.primary }}>PlateShare</span>
+        </Link>
+      </div>
+
+      {/* Desktop Navigation Menu - Hidden on tablet and below */}
+      <div className="navbar-desktop-menu" style={{ 
+        display: "flex", 
+        gap: spacing.xl, 
+        alignItems: "center"
+      }}>
+        <Link to="/" style={navLinkStyle}
         onMouseEnter={(e) => {
           e.target.style.color = theme.primary;
           e.target.style.transform = "scale(1.1)";
@@ -63,14 +117,7 @@ export default function Navbar() {
         }}>
           Home
         </Link>
-        <Link to="/foods" style={{
-          marginRight: "0",
-          textDecoration: "none",
-          color: theme.text,
-          fontSize: "14px",
-          fontWeight: "500",
-          transition: "color 0.3s, transform 0.3s"
-        }}
+        <Link to="/foods" style={navLinkStyle}
         onMouseEnter={(e) => {
           e.target.style.color = theme.primary;
           e.target.style.transform = "scale(1.1)";
@@ -81,14 +128,7 @@ export default function Navbar() {
         }}>
           Available Foods
         </Link>
-        <Link to="/about" style={{
-          marginRight: "0",
-          textDecoration: "none",
-          color: theme.text,
-          fontSize: "14px",
-          fontWeight: "500",
-          transition: "color 0.3s, transform 0.3s"
-        }}
+        <Link to="/about" style={navLinkStyle}
         onMouseEnter={(e) => {
           e.target.style.color = theme.primary;
           e.target.style.transform = "scale(1.1)";
@@ -99,14 +139,7 @@ export default function Navbar() {
         }}>
           About
         </Link>
-        <Link to="/contact" style={{
-          marginRight: "0",
-          textDecoration: "none",
-          color: theme.text,
-          fontSize: "14px",
-          fontWeight: "500",
-          transition: "color 0.3s, transform 0.3s"
-        }}
+        <Link to="/contact" style={navLinkStyle}
         onMouseEnter={(e) => {
           e.target.style.color = theme.primary;
           e.target.style.transform = "scale(1.1)";
@@ -119,7 +152,7 @@ export default function Navbar() {
         </Link>
       </div>
 
-      <div style={{ display: "flex", gap: spacing.md, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: spacing.xs, alignItems: "center" }}>
         {/* Dark Mode Toggle */}
         <button
           onClick={toggleTheme}
@@ -151,7 +184,13 @@ export default function Navbar() {
         </button>
 
         {!user && (
-          <div style={{ display: "flex", gap: spacing.md }}>
+          <div style={{ 
+            display: "flex", 
+            gap: spacing.md,
+            "@media (max-width: 768px)": {
+              display: mobileMenuOpen ? "flex" : "none"
+            }
+          }}>
             <Link to="/login" style={{
               padding: `${spacing.sm} ${spacing.md}`,
               backgroundColor: theme.primary,
@@ -199,7 +238,7 @@ export default function Navbar() {
               onMouseEnter={(e) => e.currentTarget.style.background = theme.surfaceLight}
               onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
             >
-              <span style={{ fontSize: "14px", fontWeight: "500", color: theme.text }}>{user.displayName || user.email}</span>
+              <span className="navbar-username" style={{ fontSize: "14px", fontWeight: "500", color: theme.text }}>{user.displayName || user.email}</span>
               {user.photoURL && (
                 <img
                   src={user.photoURL}
@@ -312,6 +351,57 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
+      {/* Mobile Menu - Visible only on tablet and below */}
+      {mobileMenuOpen && (
+        <div className="navbar-mobile-menu" style={{
+          position: "absolute",
+          top: "65px",
+          left: "0",
+          right: "0",
+          backgroundColor: theme.background,
+          borderBottom: `1px solid ${theme.border}`,
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          display: "flex",
+          flexDirection: "column",
+          gap: spacing.md,
+          padding: spacing.md,
+          zIndex: "998"
+        }}>
+          <Link to="/" 
+            style={{...navLinkStyle, fontSize: "16px"}}
+            onClick={() => setMobileMenuOpen(false)}
+            onMouseEnter={(e) => e.target.style.color = theme.primary}
+            onMouseLeave={(e) => e.target.style.color = theme.text}
+          >
+            Home
+          </Link>
+          <Link to="/foods" 
+            style={{...navLinkStyle, fontSize: "16px"}}
+            onClick={() => setMobileMenuOpen(false)}
+            onMouseEnter={(e) => e.target.style.color = theme.primary}
+            onMouseLeave={(e) => e.target.style.color = theme.text}
+          >
+            Available Foods
+          </Link>
+          <Link to="/about" 
+            style={{...navLinkStyle, fontSize: "16px"}}
+            onClick={() => setMobileMenuOpen(false)}
+            onMouseEnter={(e) => e.target.style.color = theme.primary}
+            onMouseLeave={(e) => e.target.style.color = theme.text}
+          >
+            About
+          </Link>
+          <Link to="/contact" 
+            style={{...navLinkStyle, fontSize: "16px"}}
+            onClick={() => setMobileMenuOpen(false)}
+            onMouseEnter={(e) => e.target.style.color = theme.primary}
+            onMouseLeave={(e) => e.target.style.color = theme.text}
+          >
+            Contact
+          </Link>
+        </div>
+      )}
     </nav>
   );
 }
