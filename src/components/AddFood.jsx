@@ -384,6 +384,7 @@ export default function AddFood() {
               cursor: isSubmitting ? "not-allowed" : "pointer",
               transition: "background 0.3s",
               marginTop: "10px",
+              minHeight: "44px"
             }}
             onMouseEnter={(e) => !isSubmitting && (e.target.style.backgroundColor = "#218838")}
             onMouseLeave={(e) => !isSubmitting && (e.target.style.backgroundColor = "#28a745")}

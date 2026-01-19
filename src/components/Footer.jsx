@@ -1,12 +1,18 @@
+import { useContext } from "react";
+import { ThemeContext } from "../provider/ThemeProvider";
+import { spacing } from "../theme/theme";
+
 export default function Footer() {
+  const { theme } = useContext(ThemeContext);
   const currentYear = new Date().getFullYear();
 
   return (
     <footer style={{
-      backgroundColor: "#f8f9fa",
-      borderTop: "1px solid #ddd",
-      padding: "30px 20px 15px",
-      marginTop: "40px"
+      backgroundColor: theme.surfaceLight,
+      borderTop: `1px solid ${theme.border}`,
+      padding: `${spacing.lg} ${spacing.md}`,
+      marginTop: spacing.xl,
+      transition: "background-color 0.3s"
     }}>
     
       <div style={{
@@ -15,19 +21,21 @@ export default function Footer() {
         alignItems: "center",
         maxWidth: "1200px",
         margin: "0 auto",
-        paddingBottom: "30px",
-        borderBottom: "1px solid #eee"
+        paddingBottom: spacing.lg,
+        borderBottom: `1px solid ${theme.border}`,
+        flexWrap: "wrap",
+        gap: spacing.md
       }}>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
           <span style={{ fontSize: "24px" }}>🍽️</span>
-          <h2 style={{ margin: "0", fontSize: "20px", fontWeight: "bold", color: "#333" }}>
+          <h2 style={{ margin: "0", fontSize: "20px", fontWeight: "bold", color: theme.text }}>
             PlateShare
           </h2>
         </div>
 
 
-        <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: spacing.lg, alignItems: "center" }}>
           <a
             href="https://facebook.com"
             target="_blank"
@@ -35,7 +43,7 @@ export default function Footer() {
             style={{
               fontSize: "20px",
               textDecoration: "none",
-              color: "#1877f2",
+              color: theme.facebook,
               transition: "opacity 0.3s"
             }}
             onMouseEnter={(e) => e.target.style.opacity = "0.7"}
@@ -51,7 +59,7 @@ export default function Footer() {
             style={{
               fontSize: "20px",
               textDecoration: "none",
-              color: "#1da1f2",
+              color: theme.twitter,
               transition: "opacity 0.3s"
             }}
             onMouseEnter={(e) => e.target.style.opacity = "0.7"}
@@ -68,7 +76,7 @@ export default function Footer() {
             style={{
               fontSize: "20px",
               textDecoration: "none",
-              color: "#0a66c2",
+              color: theme.secondary,
               transition: "opacity 0.3s"
             }}
             onMouseEnter={(e) => e.target.style.opacity = "0.7"}
@@ -83,8 +91,8 @@ export default function Footer() {
 
       <div style={{
         textAlign: "center",
-        padding: "20px 0",
-        color: "#666",
+        padding: spacing.lg,
+        color: theme.textLight,
         fontSize: "14px"
       }}>
         <p style={{ margin: "0" }}>

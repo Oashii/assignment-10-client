@@ -3,8 +3,11 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
+import { ThemeContext } from "../provider/ThemeProvider";
 import bannerImage from "../assets/banner.jpg";
 import { motion } from "framer-motion";
+import { spacing } from "../theme/theme";
+import Loader from "./Loader";
 
 const fetchFoods = async () => {
   const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
@@ -13,14 +16,15 @@ const fetchFoods = async () => {
 
 export default function Home() {
   const { user } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const { data: foods = [], isLoading, isError } = useQuery({
     queryKey: ["foods"],
     queryFn: fetchFoods,
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Something went wrong!</p>;
+  if (isLoading) return <Loader variant="grid" />;
+  if (isError) return <div style={{ color: theme.error, padding: spacing.lg, textAlign: "center" }}>Error loading foods!</div>;
 
 
   const sortedFoods = [...foods].sort((a, b) => {
@@ -32,7 +36,7 @@ export default function Home() {
   const featured = sortedFoods.slice(0, 6);
 
   return (
-    <div>
+    <div style={{ backgroundColor: theme.background, transition: "background-color 0.3s" }}>
       {/* Banner Section */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -49,30 +53,49 @@ export default function Home() {
           alignItems: "center",
           textAlign: "center",
           color: "white",
-          padding: "20px",
+          padding: spacing.lg,
         }}
       >
         <motion.h1
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          style={{ fontSize: "48px", marginBottom: "20px", fontWeight: "bold" }}>
+          style={{ fontSize: "48px", marginBottom: spacing.lg, fontWeight: "bold" }}>
           Share Food, Build Community, Reduce Waste
         </motion.h1>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          style={{ fontSize: "18px", marginBottom: "30px", maxWidth: "600px" }}>
+          style={{ fontSize: "18px", marginBottom: spacing.lg, maxWidth: "600px" }}>
           Connect with neighbors to share surplus food, reduce waste, and strengthen your local community.
         </motion.p>
         <motion.div
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          style={{ display: "flex", gap: "15px", justifyContent: "center" }}>
+          style={{ display: "flex", gap: spacing.md, justifyContent: "center", flexWrap: "wrap" }}>
           <Link to="/foods" style={{ textDecoration: "none" }}>
-            <button style={{ padding: "12px 30px", fontSize: "16px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", transition: "background 0.3s" }} onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"} onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"}>
+            <button style={{
+              padding: `${spacing.md} ${spacing.lg}`,
+              fontSize: "16px",
+              backgroundColor: theme.primary,
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              transition: "all 0.3s",
+              minHeight: "44px",
+              minWidth: "160px"
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.opacity = "0.9";
+              e.target.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.opacity = "1";
+              e.target.style.transform = "translateY(0)";
+            }}>
               Browse Available Food
             </button>
           </Link>
@@ -84,9 +107,26 @@ export default function Home() {
                 navigate("/login");
               }
             }}
-            style={{ padding: "12px 30px", fontSize: "16px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", transition: "background 0.3s" }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"}
-            onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"}
+            style={{
+              padding: `${spacing.md} ${spacing.lg}`,
+              fontSize: "16px",
+              backgroundColor: theme.secondary,
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              transition: "all 0.3s",
+              minHeight: "44px",
+              minWidth: "160px"
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.opacity = "0.9";
+              e.target.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.opacity = "1";
+              e.target.style.transform = "translateY(0)";
+            }}
           >
             Donate Food
           </button>
@@ -99,9 +139,15 @@ export default function Home() {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        style={{ padding: "20px" }}>
-        <h2 style={{textAlign: "center"}}>Featured Foods</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+        style={{ padding: spacing.lg, backgroundColor: theme.background }}>
+        <h2 style={{ textAlign: "center", color: theme.text, marginBottom: spacing.lg }}>Featured Foods</h2>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: spacing.lg,
+          maxWidth: "1200px",
+          margin: "0 auto"
+        }}>
           {featured.map((food, index) => (
             <motion.div
               key={food._id}
@@ -109,22 +155,79 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              style={{ border: "1px solid #ccc", borderRadius: "10px", padding: "10px" }}>
-              <img src={food.image} alt={food.name} style={{ width: "100%", height: "250px", objectFit: "cover", borderRadius: "10px" }} />
-              <h3>{food.name}</h3>
-              <p><b>Donor:</b> {food.donor}</p>
-              <p><b>Quantity:</b> {food.quantity}</p>
-              <p><b>Location:</b> {food.location}</p>
-              <Link to={`/food/${food._id}`}>
-                <button style={{ marginTop: "10px", padding: "8px 16px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", transition: "background 0.3s" }} onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"} onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"}>View Details</button>
+              style={{
+                border: `1px solid ${theme.border}`,
+                borderRadius: "10px",
+                padding: spacing.md,
+                backgroundColor: theme.surfaceLight,
+                cursor: "pointer",
+                transition: "all 0.3s",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-8px)";
+                e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }}>
+              <img src={food.image} alt={food.name} style={{
+                width: "100%",
+                height: "200px",
+                objectFit: "cover",
+                borderRadius: "8px",
+                marginBottom: spacing.md
+              }} />
+              <h3 style={{ color: theme.text, marginBottom: spacing.sm }}>{food.name}</h3>
+              <p style={{ color: theme.textLight, marginBottom: spacing.sm }}><b>Donor:</b> {food.donor}</p>
+              <p style={{ color: theme.textLight, marginBottom: spacing.sm }}><b>Quantity:</b> {food.quantity}</p>
+              <p style={{ color: theme.textLight, marginBottom: spacing.md }}><b>Location:</b> {food.location}</p>
+              <Link to={`/food/${food._id}`} style={{ textDecoration: "none", marginTop: "auto" }}>
+                <button style={{
+                  width: "100%",
+                  marginTop: spacing.md,
+                  padding: `${spacing.sm} ${spacing.md}`,
+                  backgroundColor: theme.primary,
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  transition: "all 0.3s"
+                }}
+                onMouseEnter={(e) => e.target.style.opacity = "0.9"}
+                onMouseLeave={(e) => e.target.style.opacity = "1"}>
+                  View Details
+                </button>
               </Link>
             </motion.div>
           ))}
         </div>
 
-        <div style={{ marginTop: "20px", textAlign: "center" }}>
-          <Link to="/foods">
-            <button style={{ padding: "10px 20px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", transition: "background 0.3s" }} onMouseEnter={(e) => e.target.style.backgroundColor = "#218838"} onMouseLeave={(e) => e.target.style.backgroundColor = "#28a745"}>Show All Foods</button>
+        <div style={{ marginTop: "60px", paddingTop: spacing.xl, textAlign: "center" }}>
+          <Link to="/foods" style={{ textDecoration: "none" }}>
+            <button style={{
+              padding: `${spacing.sm} ${spacing.lg}`,
+              backgroundColor: theme.primary,
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              transition: "all 0.3s",
+              fontSize: "16px"
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.opacity = "0.9";
+              e.target.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.opacity = "1";
+              e.target.style.transform = "translateY(0)";
+            }}>
+              Show All Foods
+            </button>
           </Link>
         </div>
       </motion.div>
@@ -135,84 +238,53 @@ export default function Home() {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        style={{ padding: "60px 20px", backgroundColor: "#f8f9fa" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "50px", fontSize: "32px", fontWeight: "bold", color: "#333" }}>How It Works</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "40px", maxWidth: "1200px", margin: "0 auto" }}>
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-            style={{
-              backgroundColor: "#fff",
-              padding: "30px 25px",
-              borderRadius: "12px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              textAlign: "center",
-              transition: "transform 0.3s, box-shadow 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
-            }}>
-            <div style={{ fontSize: "48px", marginBottom: "15px", color: "#28a745" }}>📤</div>
-            <h3 style={{ fontSize: "20px", marginBottom: "15px", color: "#333" }}>Post Food</h3>
-            <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>Share your surplus food with the community. Upload photos, describe the food, and let others know what's available.</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
-            style={{
-              backgroundColor: "#fff",
-              padding: "30px 25px",
-              borderRadius: "12px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              textAlign: "center",
-              transition: "transform 0.3s, box-shadow 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
-            }}>
-            <div style={{ fontSize: "48px", marginBottom: "15px", color: "#28a745" }}>🔍</div>
-            <h3 style={{ fontSize: "20px", marginBottom: "15px", color: "#333" }}>Find Food</h3>
-            <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>Browse available foods in your neighborhood. Filter by location, type, and quantity to find what you need.</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            viewport={{ once: true }}
-            style={{
-              backgroundColor: "#fff",
-              padding: "30px 25px",
-              borderRadius: "12px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              textAlign: "center",
-              transition: "transform 0.3s, box-shadow 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
-            }}>
-            <div style={{ fontSize: "48px", marginBottom: "15px", color: "#28a745" }}>🤝</div>
-            <h3 style={{ fontSize: "20px", marginBottom: "15px", color: "#333" }}>Collect Food</h3>
-            <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>Connect with donors, arrange pickup, and collect your food. Build meaningful relationships with your neighbors.</p>
-          </motion.div>
+        style={{ padding: spacing.xl, backgroundColor: theme.surfaceLight }}>
+        <h2 style={{
+          textAlign: "center",
+          marginBottom: spacing.xl,
+          fontSize: "32px",
+          fontWeight: "bold",
+          color: theme.text
+        }}>How It Works</h2>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: spacing.xl,
+          maxWidth: "1200px",
+          margin: "0 auto"
+        }}>
+          {[
+            { icon: "📤", title: "Post Food", desc: "Share your surplus food with the community. Upload photos, describe the food, and let others know what's available." },
+            { icon: "🔍", title: "Find Food", desc: "Browse available foods in your neighborhood. Filter by location, type, and quantity to find what you need." },
+            { icon: "🤝", title: "Collect Food", desc: "Connect with donors, arrange pickup, and collect your food. Build meaningful relationships with your neighbors." }
+          ].map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: idx === 0 ? -30 : idx === 2 ? 30 : 0, y: idx === 1 ? 30 : 0 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.6, delay: (idx * 0.2) }}
+              viewport={{ once: true }}
+              style={{
+                backgroundColor: theme.background,
+                padding: spacing.lg,
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                textAlign: "center",
+                transition: "all 0.3s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-8px)";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
+              }}>
+              <div style={{ fontSize: "48px", marginBottom: spacing.md }}>{item.icon}</div>
+              <h3 style={{ fontSize: "20px", marginBottom: spacing.md, color: theme.text }}>{item.title}</h3>
+              <p style={{ fontSize: "14px", color: theme.textLight, lineHeight: "1.6" }}>{item.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
 
@@ -222,109 +294,54 @@ export default function Home() {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        style={{ padding: "60px 20px" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "50px", fontSize: "32px", fontWeight: "bold", color: "#333" }}>Community Impact</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "30px", maxWidth: "1200px", margin: "0 auto" }}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-            style={{
-              backgroundColor: "#e8f5e9",
-              padding: "40px 25px",
-              borderRadius: "12px",
-              textAlign: "center",
-              border: "2px solid #28a745",
-              transition: "transform 0.3s, box-shadow 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = "0 8px 20px rgba(40, 167, 69, 0.2)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
-            }}>
-            <div style={{ fontSize: "36px", fontWeight: "bold", color: "#28a745", marginBottom: "10px" }}>2,450+</div>
-            <p style={{ fontSize: "16px", color: "#333", fontWeight: "500" }}>Foods Shared</p>
-            <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>Meals made available</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-            style={{
-              backgroundColor: "#e3f2fd",
-              padding: "40px 25px",
-              borderRadius: "12px",
-              textAlign: "center",
-              border: "2px solid #2196f3",
-              transition: "transform 0.3s, box-shadow 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = "0 8px 20px rgba(33, 150, 243, 0.2)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
-            }}>
-            <div style={{ fontSize: "36px", fontWeight: "bold", color: "#2196f3", marginBottom: "10px" }}>1,850+</div>
-            <p style={{ fontSize: "16px", color: "#333", fontWeight: "500" }}>Active Members</p>
-            <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>Growing community</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
-            style={{
-              backgroundColor: "#fff3e0",
-              padding: "40px 25px",
-              borderRadius: "12px",
-              textAlign: "center",
-              border: "2px solid #ff9800",
-              transition: "transform 0.3s, box-shadow 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = "0 8px 20px rgba(255, 152, 0, 0.2)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
-            }}>
-            <div style={{ fontSize: "36px", fontWeight: "bold", color: "#ff9800", marginBottom: "10px" }}>12.5T</div>
-            <p style={{ fontSize: "16px", color: "#333", fontWeight: "500" }}>Food Waste Reduced</p>
-            <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>Tons saved from landfill</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
-            style={{
-              backgroundColor: "#f3e5f5",
-              padding: "40px 25px",
-              borderRadius: "12px",
-              textAlign: "center",
-              border: "2px solid #9c27b0",
-              transition: "transform 0.3s, box-shadow 0.3s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = "0 8px 20px rgba(156, 39, 176, 0.2)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none";
-            }}>
-            <div style={{ fontSize: "36px", fontWeight: "bold", color: "#9c27b0", marginBottom: "10px" }}>45+</div>
-            <p style={{ fontSize: "16px", color: "#333", fontWeight: "500" }}>Cities Connected</p>
-            <p style={{ fontSize: "12px", color: "#666", marginTop: "5px" }}>Spreading worldwide</p>
-          </motion.div>
+        style={{ padding: spacing.xl, backgroundColor: theme.background }}>
+        <h2 style={{
+          textAlign: "center",
+          marginBottom: spacing.xl,
+          fontSize: "32px",
+          fontWeight: "bold",
+          color: theme.text
+        }}>Community Impact</h2>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: spacing.lg,
+          maxWidth: "1200px",
+          margin: "0 auto"
+        }}>
+          {[
+            { num: "2,450+", label: "Foods Shared", sub: "Meals made available", color: theme.success },
+            { num: "1,850+", label: "Active Members", sub: "Growing community", color: theme.secondary },
+            { num: "12.5T", label: "Food Waste Reduced", sub: "Tons saved from landfill", color: theme.warning },
+            { num: "45+", label: "Cities Connected", sub: "Spreading worldwide", color: theme.accent }
+          ].map((stat, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: idx * 0.1 }}
+              viewport={{ once: true }}
+              style={{
+                backgroundColor: theme.surfaceLight,
+                padding: spacing.lg,
+                borderRadius: "12px",
+                textAlign: "center",
+                borderLeft: `4px solid ${stat.color}`,
+                transition: "all 0.3s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.05)";
+                e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = "none";
+              }}>
+              <div style={{ fontSize: "36px", fontWeight: "bold", color: stat.color, marginBottom: spacing.sm }}>{stat.num}</div>
+              <p style={{ fontSize: "16px", color: theme.text, fontWeight: "500" }}>{stat.label}</p>
+              <p style={{ fontSize: "12px", color: theme.textLight, marginTop: "5px" }}>{stat.sub}</p>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
     </div>

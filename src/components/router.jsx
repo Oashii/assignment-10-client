@@ -10,6 +10,11 @@ import FoodRequests from "./FoodRequests";
 import Login from "./Login";
 import Register from "./Register";
 import PrivateRoute from "./PrivateRoute";
+import Dashboard from "./Dashboard";
+import DashboardHome from "./DashboardHome";
+import UserProfile from "./UserProfile";
+import About from "./About";
+import Contact from "./Contact";
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +69,45 @@ export const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <Dashboard />
+      </PrivateRoute>
+    ),
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <DashboardHome />,
+      },
+      {
+        path: "my-foods",
+        element: <ManageMyFoods />,
+      },
+      {
+        path: "add-food",
+        element: <AddFood />,
+      },
+      {
+        path: "requests",
+        element: <FoodRequests />,
+      },
+      {
+        path: "profile",
+        element: <UserProfile />,
       },
     ],
   },

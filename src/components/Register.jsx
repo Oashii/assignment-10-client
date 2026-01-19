@@ -229,6 +229,7 @@ export default function Register() {
             !isPasswordValid || !name || !email || isLoading ? 0.6 : 1,
           transition: "background 0.3s ease",
           boxSizing: "border-box",
+          minHeight: "44px"
         }}
         onMouseOver={(e) =>
           !isLoading && (e.target.style.background = "#4338ca")
@@ -257,6 +258,7 @@ export default function Register() {
         opacity: isLoading ? 0.6 : 1,
         transition: "background 0.3s ease",
         boxSizing: "border-box",
+        minHeight: "44px"
       }}
       onMouseOver={(e) =>
         !isLoading && (e.target.style.background = "#c1351d")
