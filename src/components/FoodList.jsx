@@ -5,10 +5,10 @@ import Loader from "./Loader";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../provider/ThemeProvider";
 import { spacing, breakpoints } from "../theme/theme";
-
+import API_BASE_URL from "../api";
 
 const fetchFoods = async () => {
-  const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
+  const res = await axios.get(`${API_BASE_URL}/foods`);
   return res.data;
 };
 

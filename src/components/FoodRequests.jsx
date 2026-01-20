@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
+import API_BASE_URL from "../api";
 
 export default function FoodRequests() {
   const { user } = useContext(AuthContext);
@@ -10,7 +11,7 @@ export default function FoodRequests() {
   const { data: userRequests = [], isLoading, isError } = useQuery({
     queryKey: ["myRequests", user?.email],
     queryFn: async () => {
-      const res = await axios.get("https://plateshare-beryl.vercel.app/requests");
+      const res = await axios.get(`${API_BASE_URL}/requests`);
    
       const filteredRequests = res.data.filter((req) => req.userEmail === user.email);
       
@@ -18,7 +19,7 @@ export default function FoodRequests() {
       const requestsWithFoodDetails = await Promise.all(
         filteredRequests.map(async (req) => {
           try {
-            const foodRes = await axios.get(`https://plateshare-beryl.vercel.app/foods/${req.foodId}`);
+            const foodRes = await axios.get(`${API_BASE_URL}/foods/${req.foodId}`);
             return { ...req, foodDetails: foodRes.data };
           } catch {
             return { ...req, foodDetails: null };

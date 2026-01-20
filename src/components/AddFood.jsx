@@ -4,6 +4,7 @@ import { useState, useContext } from "react";
 import toast from "react-hot-toast";
 import { AuthContext } from "../provider/AuthProvider";
 import { motion as Motion } from "framer-motion";
+import API_BASE_URL from "../api";
 
 export default function AddFood() {
   const { user } = useContext(AuthContext);
@@ -23,7 +24,7 @@ export default function AddFood() {
 
   const mutation = useMutation({
     mutationFn: async (newFood) => {
-      const res = await axios.post("https://plateshare-beryl.vercel.app/foods", newFood);
+      const res = await axios.post(`${API_BASE_URL}/foods`, newFood);
       return res.data;
     },
     onSuccess: () => {

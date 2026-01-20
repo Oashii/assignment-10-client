@@ -7,6 +7,7 @@ import { AuthContext } from "../provider/AuthProvider";
 import { motion } from "framer-motion";
 import { ThemeContext } from "../provider/ThemeProvider";
 import { spacing } from "../theme/theme";
+import API_BASE_URL from "../api";
 
 export default function FoodDetails() {
   const { id } = useParams();
@@ -24,7 +25,7 @@ export default function FoodDetails() {
   const { data: food, isLoading, isError } = useQuery({
     queryKey: ["food", id],
     queryFn: async () => {
-      const res = await axios.get(`https://plateshare-beryl.vercel.app/foods/${id}`);
+      const res = await axios.get(`${API_BASE_URL}/foods/${id}`);
       return res.data;
     },
   });
@@ -32,7 +33,7 @@ export default function FoodDetails() {
   const { data: foodRequests = [] } = useQuery({
     queryKey: ["foodRequests", id],
     queryFn: async () => {
-      const res = await axios.get(`https://plateshare-beryl.vercel.app/requests`);
+      const res = await axios.get(`${API_BASE_URL}/requests`);
       return (res.data || []).filter((req) => req.foodId === id);
     },
     enabled: !!id,
@@ -42,7 +43,7 @@ export default function FoodDetails() {
     queryKey: ["relatedFoods", food?.location],
     queryFn: async () => {
       if (!food?.location) return [];
-      const res = await axios.get(`https://plateshare-beryl.vercel.app/foods`);
+      const res = await axios.get(`${API_BASE_URL}/foods`);
       return (res.data || [])
         .filter((f) => f._id !== id && f.location === food.location && f.food_status !== "donated")
         .slice(0, 4);
@@ -52,7 +53,7 @@ export default function FoodDetails() {
 
   const requestMutation = useMutation({
     mutationFn: async (newRequest) => {
-      const res = await axios.post("https://plateshare-beryl.vercel.app/requests", newRequest);
+      const res = await axios.post(`${API_BASE_URL}/requests`, newRequest);
       return res.data;
     },
     onSuccess: () => {
@@ -65,9 +66,9 @@ export default function FoodDetails() {
 
   const requestActionMutation = useMutation({
     mutationFn: async ({ requestId, status }) => {
-      await axios.patch(`https://plateshare-beryl.vercel.app/requests/${requestId}`, { status });
+      await axios.patch(`${API_BASE_URL}/requests/${requestId}`, { status });
       if (status === "accepted") {
-        await axios.patch(`https://plateshare-beryl.vercel.app/foods/${id}`, { food_status: "donated" });
+        await axios.patch(`${API_BASE_URL}/foods/${id}`, { food_status: "donated" });
       }
     },
     onSuccess: (_, { status }) => {

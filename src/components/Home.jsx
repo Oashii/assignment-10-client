@@ -8,9 +8,10 @@ import bannerImage from "../assets/banner.jpg";
 import { motion } from "framer-motion";
 import { spacing } from "../theme/theme";
 import Loader from "./Loader";
+import API_BASE_URL from "../api";
 
 const fetchFoods = async () => {
-  const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
+  const res = await axios.get(`${API_BASE_URL}/foods`);
   return res.data;
 };
 

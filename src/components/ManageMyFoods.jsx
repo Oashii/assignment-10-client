@@ -3,6 +3,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { AuthContext } from "../provider/AuthProvider";
+import API_BASE_URL from "../api";
 
 export default function ManageMyFoods() {
   const { user, loading } = useContext(AuthContext);
@@ -19,7 +20,7 @@ export default function ManageMyFoods() {
   const { data: foods = [], isLoading, isError } = useQuery({
     queryKey: ["myFoods", user?.email],
     queryFn: async () => {
-      const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
+      const res = await axios.get(`${API_BASE_URL}/foods`);
       return res.data.filter((food) => food.donorEmail === user.email);
     },
     enabled: !!user,
@@ -27,7 +28,7 @@ export default function ManageMyFoods() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      const res = await axios.delete(`https://plateshare-beryl.vercel.app/foods/${id}`);
+      const res = await axios.delete(`${API_BASE_URL}/foods/${id}`);
       return res.data;
     },
     onSuccess: () => {
@@ -38,7 +39,7 @@ export default function ManageMyFoods() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }) => {
-      const res = await axios.patch(`https://plateshare-beryl.vercel.app/foods/${id}`, updates);
+      const res = await axios.patch(`${API_BASE_URL}/foods/${id}`, updates);
       return res.data;
     },
     onSuccess: () => {

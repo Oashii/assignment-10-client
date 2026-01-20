@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { ThemeContext } from "../provider/ThemeProvider";
 import { spacing } from "../theme/theme";
+import API_BASE_URL from "../api";
 
 export default function DashboardHome() {
   const { theme } = useContext(ThemeContext);
@@ -10,7 +11,7 @@ export default function DashboardHome() {
   const { data: allFoods = [] } = useQuery({
     queryKey: ["allFoods"],
     queryFn: async () => {
-      const res = await axios.get("https://plateshare-beryl.vercel.app/foods");
+      const res = await axios.get(`${API_BASE_URL}/foods`);
       return res.data;
     },
   });
